@@ -1,3 +1,6 @@
 [submodule "public/singurty.github.io"]
 	path = public/singurty.github.io
 	url = git@github.com:singurty/singurty.github.io.git
+[submodule "themes/manis"]
+	path = themes/manis
+	url = git@github.com:yursan9/manis-hugo-theme.git
