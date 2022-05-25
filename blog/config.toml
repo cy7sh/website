@@ -10,10 +10,10 @@ useCDN=false
 
 [[menu.main]]
 name = "home"
-url = '/'
+url = '../'
 weight = 1
 
 [[menu.main]]
 name = "blog"
-url = "/blog"
+url = "/"
 weight = 2
