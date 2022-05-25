@@ -3,3 +3,22 @@ languageCode = 'en-us'
 title = 'Shirish Pokhrel'
 theme = 'archie'
 publishdir = './public/singurty.github.io/blog/'
+
+[params]
+mode="auto"
+useCDN=false
+
+[[params.social]]
+name = "GitHub"
+icon = "github"
+url = "https://github.com/singurty/"
+
+[[menu.main]]
+name = "home"
+url = '/'
+weight = 1
+
+[[menu.main]]
+name = "blog"
+url = "/blog"
+weight = 2
