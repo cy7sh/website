@@ -1,0 +1,3 @@
+[submodule "public/singurty.github.io"]
+	path = public/singurty.github.io
+	url = git@github.com:singurty/singurty.github.io.git
