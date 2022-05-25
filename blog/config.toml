@@ -1,8 +1,8 @@
 baseURL = 'https://shirishpokhrel.me/blog/'
 languageCode = 'en-us'
-title = 'Shirish Pokhrel'
+title = 'Blog'
 theme = 'archie'
-publishdir = './public/singurty.github.io/blog/'
+publishdir = '../public/singurty.github.io/blog/'
 
 [params]
 mode="auto"
