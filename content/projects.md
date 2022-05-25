@@ -18,5 +18,13 @@ Vritually all my projects are me reading a book and trying stuff out. I guess I'
     My very first program in Go. This was supposed to be something like a C&C server, but because it's kind of in the gray area I couldn't pour my heart in it. I don't know what it turned out to be in the end. Networking made it fun and it was a nice introduction to Go.
 - [purtorrent](https://github.com/singurty/purtorrent)  
     The first "real" program I wrote. Before this, the only programming I ever did was watching videos of someone coding and copying what they wrote. Inspired by some people, I decided to stop that and use google for all I need to know. The fact that I didn't have an idea about what to code couldn't stop me because I could just implement something that has already been made and it'd still be a great learning experience. Again, networking made this fun. I read the Bittorrent specification, someone else's python implementation, and a couple of text tutorials.
+- [screwdriver](https://github.com/singurty/screwdriver)  
+    This was inspired by purtorrent and uses its code. It connects to a torrent and runs a nmap scan on each of the peers.
+- [smol](https://github.com/singurty/smol)  
+    Inspired by the [hutter prize](http://prize.hutter1.net/), I wanted to write a compressor, but it ended up making files bigger.
+- [scripts](https://github.com/singurty/scripts)  
+    Python scripts that have made my life easier. They have saved from numerous serious predicaments.
+- [sicp](https://github.com/singurty/sicp)  
+    I guess I read [Structure and Interpretation of Computer Programs](https://mitpress.mit.edu/sites/default/files/sicp/index.html) at some point.
 - [configs](https://github.com/singurty/configs)  
     I don't customize things much, but here's what I have. I use neovim, tmux, bash, and awesome window manager.
