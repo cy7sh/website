@@ -26,7 +26,7 @@ body{
 }
 
 p {
-  font-family: 'Fira Sans', sans-serif;
+  font-family: 'Roboto Mono', monospace;
   line-height: 1.5;
 }
 
@@ -44,7 +44,7 @@ blockquote {
 }
 
 a {
-  border-bottom: 3px solid var(--maincolor);
+  border-bottom: 1px solid var(--maincolor);
   color: inherit;
   text-decoration: none;
 }
@@ -224,7 +224,7 @@ justify-content: space-between;
   content: "🏷 ";
 }
 .tags a{
-  border-bottom: 3px solid var(--maincolor); 
+  border-bottom: 1px solid var(--maincolor); 
 }
 .tags a:hover{
   color:white;
