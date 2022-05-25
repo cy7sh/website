@@ -22,3 +22,8 @@ weight = 2
 name = "projects"
 url = "/projects"
 weight = 3
+
+[[menu.main]]
+name = "rss"
+url = "index.xml"
+weight = 4
