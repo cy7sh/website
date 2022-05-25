@@ -3,6 +3,7 @@ languageCode = 'en-us'
 title = 'Shirish Pokhrel'
 theme = 'archie'
 publishdir = './public/singurty.github.io/'
+disableKinds='RSS'
 
 [params]
 mode="auto"

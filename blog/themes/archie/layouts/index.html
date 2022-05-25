@@ -4,7 +4,8 @@
 	<body>
 		<div class="content">
 			{{ partial "head.html" . }}
-			
+			{{ .Content }}
+
 			<main class="list">
 				<div class="site-description">
 					{{- if isset .Site.Params "subtitle" -}}
