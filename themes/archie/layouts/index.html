@@ -11,8 +11,12 @@
 					<p>{{ .Site.Params.Subtitle | markdownify }}</p>
 					{{- end -}}
 				</div>
-				{{ .Content }}
+
+				<section class="body">
+					{{ .Content }}
+				</section>
 			</main>
+
 			{{ partial "footer.html" . }}
 		</div>
 		
