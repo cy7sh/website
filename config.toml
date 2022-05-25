@@ -1,4 +1,4 @@
-baseURL = 'http://shirishpokhrel.me/'
+baseURL = 'https://shirishpokhrel.me/'
 languageCode = 'en-us'
 title = 'Shirish Pokhrel'
 theme = 'archie'

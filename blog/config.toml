@@ -1,4 +1,4 @@
-baseURL = 'http://shirishpokhrel.me/blog/'
+baseURL = 'https://shirishpokhrel.me/blog/'
 languageCode = 'en-us'
 title = 'Blog'
 theme = 'archie'
@@ -10,7 +10,7 @@ useCDN=false
 
 [[menu.main]]
 name = "home"
-url = 'http://shirishpokhrel.me/'
+url = 'https://shirishpokhrel.me/'
 weight = 1
 
 [[menu.main]]
