@@ -3,4 +3,4 @@
 	url = git@github.com:singurty/singurty.github.io.git
 [submodule "themes/archie"]
 	path = themes/archie
-	url = git@github.com:singurty/archie.git
+	url = git@github.com:singurty/archie
