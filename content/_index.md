@@ -10,11 +10,9 @@ I'm Shirish Pokhrel also known as singurty or skeels. I like programming and com
 Name: Shirish Pokhrel  
 Name pronunciation: see-rees  
 Pronouns: he/him  
-Birthday: April 24 2004 (18 years old)  
 Location: Nepal
 
 # Socials
 Email: shirishpokhrel1@gmail.com  
 GitHub: [@singurty](https://github.com/singurty)  
-Fediverse: [@skeels@fosstodon.org](https://fosstodon.org/@skeels)  
 Matrix: [@skeels:matrix.org](https://matrix.to/#/@skeels:matrix.org)
