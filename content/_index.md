@@ -13,6 +13,6 @@ Pronouns: he/him
 Location: Nepal
 
 # Socials
-Email: shirishpokhrel1@gmail.com  
+Email: singurty@gmail.com  
 GitHub: [@singurty](https://github.com/singurty)  
 Matrix: [@skeels:matrix.org](https://matrix.to/#/@skeels:matrix.org)
