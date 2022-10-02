@@ -26,7 +26,7 @@ func createSimpleTestData(t *testing.T) string {
 ```
 From this I got the idea that I can build a test directory tree as part of the testing, then test alternations on that directory, and clean everything once we're done. Googling, I figured out that creating a directory named "testdata" was the idiomatic way to do this and I knew this is what I needed to do. The `go test` documentation also stated that the go tool will ignore a directory named "testdata" (idk how that's useful).
 
-The rclone codebase also used a function called `TestMain` in their testing code which looked like it was setting some things before the test begun. I looked at the testing documentation and figured out that this function is called in the beginning of a test and is intended for preliminary setup. My `TestMain` function looked like this:
+The rclone codebase also used a function called `TestMain` in their testing code which looked like it was setting some things before the test began. I looked at the testing documentation and figured out that this function is called at the beginning of a test and is intended for preliminary setup. My `TestMain` function looked like this:
 ```
 func TestMain(m *testing.M) {
 	// Setup test paths
@@ -111,7 +111,7 @@ removeTestDirs(t)
 ```
 Lastly, we'll check the "delete source" functionality, which if set to true, will delete the original file after the encrypted one is created. Since we set it to false, we'll check if the file still exists. We'll encrypt the file again with `deleteSrc` set to true and this time the original file should be deleted. We'll change our working directory back to `rootDir` and clean the testing directories we created.
 
-Now let's test directory encryptin.
+Now let's test directory encryption.
 ```
 createTestDirs(t)
 
@@ -125,7 +125,7 @@ createFile(filepath.Join(plainDir, "writings/hi.txt"), []byte("hi"), t)
 createFile(filepath.Join(plainDir, "writings/nicer/nicehello.txt"), []byte("nice hello"), t)
 createFile(filepath.Join(plainDir, "writings/nicer/nicehi.txt"), []byte("nice hi"), t)
 ```
-We again start out by settig up the test directories, but this time we also create the directories `writings` and `writings/nicer`. Then, we create some files inside them.
+We again start out by setting up the test directories, but this time we also create the directories `writings` and `writings/nicer`. Then, we create some files inside them.
 ```
 expectedTreeWithoutRoot := []string{
 	"DLLEA4TLUPRHUQQUQZUDTSWIW4======",
@@ -142,7 +142,7 @@ for i, withoutRoot := range expectedTreeWithoutRoot {
 	expectedTreeWithRoot[i+1] = withRoot
 }
 ```
-I came up with an EXCEPTIONALLY creative way to test the structure of our directory tree after encryption. `expectedTreeWithoutRoot` and `expectedTreeWithRoot` are the two slices that are later passed to `checkDirTree` function to test the resulting directory tree when we omit encrypting the root directory and when we don't.
+I came up with an EXCEPTIONALLY creative way to test the structure of our directory tree after encryption. `expectedTreeWithoutRoot` and `expectedTreeWithRoot` are the two slices that are later passed to `checkDirTree` function to test the resulting directory tree when we omit to encrypt the root directory and when we don't.
 ```
 func checkDirTree(t *testing.T, path string, expectedTree []string) {
 	var rootGone bool
@@ -163,7 +163,7 @@ func checkDirTree(t *testing.T, path string, expectedTree []string) {
 	}
 }
 ```
-`checkDirTree` does a walk on `path`, skips the root directory, and compares the name of each directory it encounters with the corresponding element on the `expectedTree` slice. The output of `filepath.WalkDir` is deterministic, which means we can hardcode the order of files and directories it outputs after successful run of `encryptDirectory`. Since the contents of `plainDir` are always the same, we know that the test failed when the output of `filepath.WalkDir` doesnot match with what we hardcoded.
+`checkDirTree` does a walk on `path`, skips the root directory, and compares the name of each directory it encounters with the corresponding element on the `expectedTree` slice. The output of `filepath.WalkDir` is deterministic, which means we can hardcode the order of files and directories it outputs after a successful run of `encryptDirectory`. Since the contents of `plainDir` are always the same, we know that the test failed when the output of `filepath.WalkDir` doesnot match with what we hard coded.
 ```
 encryptDirectory(plainDir + "/", cryptDir, true)
 checkDirTree(t, cryptDir, expectedTreeWithoutRoot)
@@ -176,7 +176,7 @@ if err != nil {
 	t.Errorf("plainDir not empty when deleteSrc set to true")
 }
 ```
-The rest is self-explanatory. We test if `deleteSrc` is behaving like it should.
+The rest is self-explanatory. We test if `deleteSrc` is behaving as it should.
 ```
 removeTestDirs(t)
 createTestDirs(t)
@@ -188,7 +188,7 @@ exists, err := doesFileExist(plainDir)
 if err != nil {
 	t.Error(err)
 } else if exists {
-	t.Errorf("plainDir not deleted when deleteSrc set to true and root dir encryption not ommited")
+	t.Errorf("plainDir not deleted when deleteSrc set to true and root dir encryption not omitted")
 }
 
 removeTestDirs(t)
