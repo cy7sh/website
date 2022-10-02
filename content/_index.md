@@ -15,4 +15,3 @@ Location: Nepal
 # Socials
 Email: singurty@gmail.com  
 GitHub: [@singurty](https://github.com/singurty)  
-Matrix: [@skeels:matrix.org](https://matrix.to/#/@skeels:matrix.org)
