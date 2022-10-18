@@ -5,7 +5,7 @@ theme = 'archie'
 publishdir = './public/singurty.github.io/'
 
 [params]
-mode="auto"
+mode="toggle"
 useCDN=false
 
 [[menu.main]]
@@ -27,3 +27,20 @@ weight = 3
 name = "rss"
 url = "/index.xml"
 weight = 4
+
+# Code Highlight
+[markup]
+  [markup.highlight]
+    anchorLineNos = false
+    codeFences = true
+    guessSyntax = false
+    hl_Lines = ''
+    hl_inline = false
+    lineAnchors = ''
+    lineNoStart = 1
+    lineNos = false
+    lineNumbersInTable = true
+    noClasses = true
+    noHl = false
+    style = 'monokai'
+    tabWidth = 4
