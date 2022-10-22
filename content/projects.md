@@ -2,7 +2,6 @@
 title: "Projects"
 draft: false
 showdate: false
-home: true
 ---
 
 Vritually all my projects are me reading a book and trying stuff out. I guess I'm not there yet.
