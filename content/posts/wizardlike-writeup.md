@@ -26,4 +26,12 @@ Let's seek to the main function with `s main` command, switch to visual mode wit
 
 ![disassembly of the main function in radare2](/images/wizardlike-r2-main-disass.png)
 
-This looks the the initial entry function we say in ghidra. The first function call might be a call to the real entry function. Press "j" until that call is on top
+This looks the the initial entry function we say in ghidra. The first function call might be a call to the real entry function. Press "j" until that call is on top, press "df" to disassemble that function, and we see the the following.
+
+![disassembly of the real entry function in radare2](/images/wizardlike-r2-realentry-disass.png)
+
+Scroll down a bit and we see a loop with some compare instructions that resemble what we saw in the decompilation in Ghidra.
+
+![](/images/wizardlike-1.png)
+
+To figure out what they do, we need to set some breakpoints.
