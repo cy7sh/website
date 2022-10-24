@@ -5,7 +5,9 @@ draft: true
 showdate: true
 ---
 
-It was a great feeling of victory to solve this challenge. I was stuck on it for about a day and a half and had almost given up. As always with reverse engineering challenges, I stared out with loading the binary in Ghidra. Inside the symbol tree, we see the entry function which is executed first when the program is run. Upon decompiling we see the following.
+It was a nice feeling of winning to solve this challenge. I was stuck on it for about a day and a half and had almost given up. With this, I have solved all of the reverse engineering challenges from picoCTF 2022. This was the most fun one so I'm writing this to document how I went about solving it.
+
+As always with reverse engineering challenges, I stared out with loading the binary in Ghidra. Inside the symbol tree, we see the entry function which is executed first when the program is run. Upon decompiling we see the following.
 
 
 ![entry function decompilation in ghidra](/images/wizardlike-entry-decompile.png)
@@ -56,6 +58,40 @@ Let's walk aaround a bit. When we try to walk over to the ">" the game stops and
 
 ![breakpoint hit](/images/wizardlike-4.png)
 
-Switch to the visual mode with "V". We see that the instruction before we stopped is highlighted.
+Switch to the visual mode with "V". We see that the instruction where we had set the breakpoint is highlighted.
 
 ![breakpoint hit in visual mode](/images/wizardlike-5.png)
+
+We are comparing the eax register against "1" but the value of that register currently is "2" as we can see above. If we keep stepping with F7 we get to the instruction where we compare it against "2" where the comparison is true. Get out of visual mode and continue execution with "dc". We'll get the second level. Go over the ">" and we hit our breakpoint again.
+
+![](/images/wizardlike-6.png)
+
+This time our eax register has a value of "3". Now we know that this register holds the value of what level we are to move to. Let's see if we can exploit this. There is no way to go to leve five within the game due to the broken floor.
+
+![](/images/wizardlike-7.png)
+
+Let's hit the breakpoint when moving to level four and see if we can move to level five instead by editing the register.
+
+![](/images/wizardlike-8.png)
+
+Exit the visual mode and run the command `dr eax=5` to set the value of eax register to 5. Confirm that by listing values of all registers with `dr`.
+
+![](/images/wizardlike-9.png)
+
+Go back to visual mode and keep stepping. If a condition isn't true there's an instruction that resets the value of eax to what it originally was.
+
+![](/images/wizardlike-10.png)
+
+We change the value of eax to 5 again before the instructions to compare it against 4 and 5 run. Before them, it doesn't matter because none of those comparisons are going to be true anyway. We keep stepping instruction by instruction but it quickly goes into big loops that we have to continue over. We see the level 5 map but when trying to move we again hit the breakpoint with eax set to 4. We do the same manuever and we hit the breakpoint again with eax set to 4. I figured 4 was stored in at `dword [0x560527d3fe7c]` lookint at the instruction in the image above and if I could change the value of that variable somehow we could fix everything. But, I couldn't figure out a way to change that in radare2 so I moved over to Ghidra. Towards the end of the real entry function, we notice the following if statement.
+
+![](/images/wizardlike-11.png)
+
+If we encouter ">" we increase something by 1 and if we encouter "<" we decrease that thing by one. What happens when we encouter them in the game? We change levels! Find the corresponding assmbly instruction in the listing for the increment statement.
+
+![](/images/wizardlike-12.png)
+
+We can patch this instruction so that it adds 4 instead of 1 so that when we reach ">" in the first level we progress straight to level 5. Right click on that ADD instruction, click on "Patch Instruction" and change the value from 0x1 to 0x4.
+
+![](/images/wizardlike-13.png)
+
+Go to File > Export Program, set format to "ELF", export the binary and run it. Now when we hit ">" for the first time we go straight to level 5.
