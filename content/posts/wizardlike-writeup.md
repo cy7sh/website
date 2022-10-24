@@ -34,4 +34,28 @@ Scroll down a bit and we see a loop with some compare instructions that resemble
 
 ![](/images/wizardlike-1.png)
 
-To figure out what they do, we need to set some breakpoints.
+To figure out what they do, we need to set some breakpoints. We need the rarare2 debugger running on one terminal and the game on the another because it's an interactive program. To do that create a file named "profile.rr2" and populate it with the following. Open another terminal where you want the game to run and run an infinite sleep with `sleep 1000000`.
+```
+#!/usr/bin/rarun2
+stdio=TTY
+setenv=TERM=xterm-256color
+```
+Replace "TTY" with the tty of the terminal you want the game to run on. Find that out by running the `tty` command. The second line sets the TERM environment variable to "xterm-256color" in the environment where the game will be run in. Without it, you get a weird ncurses error. Run radare2 with this profile:
+```
+r2 -dA -r profile.rr2 game
+```
+The "-A" flag runs the "aaa" command when radare2 starts. Find the compare instruction and press F2 to set a breakpoint while in visual mode.
+
+![setting breakpont on a compare instruction](/images/wizardlike-2.png)
+
+The "b" after the instruction's address means that a break point was set, you can press F2 again to toggle that. Press "q" to get out of visual mode and run the `dc` command to continue execution until we hit a breakpoint. Check your another terminal and you should have the game running.
+
+![the game running on another tty](/images/wizardlike-3.png)
+
+Let's walk aaround a bit. When we try to walk over to the ">" the game stops and we hit a breakpoint.
+
+![breakpoint hit](/images/wizardlike-4.png)
+
+Switch to the visual mode with "V". We see that the instruction before we stopped is highlighted.
+
+![breakpoint hit in visual mode](/images/wizardlike-5.png)
