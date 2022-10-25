@@ -28,7 +28,7 @@ Let's seek to the main function with `s main` command, switch to visual mode wit
 
 ![disassembly of the main function in radare2](/images/wizardlike-r2-main-disass.png)
 
-This looks like the initial entry function we say in Ghidra. The first function call might be a call to the real entry function. Press "j" until that call is on top, press "df" to disassemble that function, and we see the following.
+This looks like the initial entry function we saw in Ghidra. The first function call might be a call to the real entry function. Press "j" until that call is on top, press "df" to disassemble that function, and we see the following.
 
 ![disassembly of the real entry function in radare2](/images/wizardlike-r2-realentry-disass.png)
 
