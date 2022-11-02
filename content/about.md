@@ -5,9 +5,10 @@ draft: false
 showdate: false
 ---
 
-I'm Shirish (pronounced as see-rees) also known as singurty (pronounced as sing-ar-tee) on most places on the internet and skeels on some. I like programming and computer-y stuff.
+I'm known as singurty (pronounced as sing-gur-tee) on most places on the internet and you shouldn't care about my real name. I like programming and computer-y stuff.
 
 # Socials
-Email: singurty@gmail.com  
-GitHub: [@singurty](https://github.com/singurty)  
+GitHub: [singurty](https://github.com/singurty)  
+Email: singurty@gmail.com (\*@singurty.com will be forwarded here)  
 PGP: [yep](/pgp.txt)  
+Twitter: [thetruesingurty](https://twitter.com/thetruesingurty)

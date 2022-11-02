@@ -1,6 +1,6 @@
-baseURL = 'https://shirishpokhrel.me/'
+baseURL = 'https://singurty.com/'
 languageCode = 'en-us'
-title = 'Shirish Pokhrel'
+title = 'singurty'
 theme = 'archie'
 publishdir = './public/singurty.github.io/'
 
