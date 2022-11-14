@@ -76,7 +76,8 @@ It's about the process not the output.
 
 It's the people who do things for fun that get to the top. Those that
 don't care about the fake notions like purpose that society establishes
-and just do what they feel like.
+and just do what they feel like. Hacking is not about
+[usefulness](https://stallman.org/articles/on-hacking.html).
 
 > When you know nothing matters, the universe is yours. The universe is basically
 > an animal that that grazes on the ordinary, creates infinite idiots just to eat
