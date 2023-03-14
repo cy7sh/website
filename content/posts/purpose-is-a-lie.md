@@ -1,7 +1,7 @@
 ---
 title: "Purpose is a Lie"
 date: 2022-11-14T15:02:30+05:45
-draft: false
+draft: true
 showdate: true
 ---
 
