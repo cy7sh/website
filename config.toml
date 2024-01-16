@@ -1,8 +1,8 @@
-baseURL = 'https://singurty.com/'
+baseURL = 'https://shirish.ca/'
 languageCode = 'en-us'
-title = 'singurty'
+title = 'shirish.ca'
 theme = 'archie'
-publishdir = './public/singurty.github.io/'
+publishdir = './public/'
 
 [params]
 mode="toggle"
