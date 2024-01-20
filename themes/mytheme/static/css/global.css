@@ -73,11 +73,6 @@ html, body {
 /*
   Code blocks and formatted text
 */
-.markdown-body code, .markdown-body code *,
-#doc pre, #doc code, #doc pre code,
-#doc pre *, #doc code *, #doc pre code * {
-  color: var(--color-code-text);
-}
 
 /*
   Images
