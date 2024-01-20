@@ -76,7 +76,6 @@ html, body {
 .markdown-body code, .markdown-body code *,
 #doc pre, #doc code, #doc pre code,
 #doc pre *, #doc code *, #doc pre code * {
-  background-color: var(--color-code-bg);
   color: var(--color-code-text);
 }
 
