@@ -766,7 +766,7 @@ select.default { color: darkGray; }
  * Based on dabblet (http://dabblet.com)
  * @author Lea Verou
  */
-code[class*="language-"], pre[class*="language-"] { color: black; background: none; text-shadow: 0 1px white; font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; text-align: left; white-space: pre; word-spacing: normal; word-break: normal; word-wrap: normal; line-height: 1.5; tab-size: 4; -webkit-hyphens: none; hyphens: none; }
+code[class*="language-"], pre[class*="language-"] { color: black; background: none;  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; text-align: left; white-space: pre; word-spacing: normal; word-break: normal; word-wrap: normal; line-height: 1.5; tab-size: 4; -webkit-hyphens: none; hyphens: none; }
 pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
 code[class*="language-"]::selection, code[class*="language-"] ::selection { text-shadow: none; background: #b3d4fc; }
 /* Code blocks */
