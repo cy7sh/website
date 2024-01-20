@@ -1,11 +1,10 @@
 baseURL = 'https://shirish.ca/'
 languageCode = 'en-us'
-title = 'shirish.ca'
-theme = 'archie'
+title = "shirish.ca"
+theme = 'mytheme'
 publishdir = './public/'
 
 [params]
-mode="toggle"
 useCDN=false
 
 [[menu.main]]

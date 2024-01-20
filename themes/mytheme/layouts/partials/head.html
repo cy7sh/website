@@ -1,9 +1,10 @@
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-    {{ $title := print .Site.Title " | " .Title }}
-    {{ if .IsHome }}{{ $title = .Site.Title }}{{ end }}
-    <title>{{ $title }}</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/common-vendor.b8ecfc406ac0b5f77a26.css">
+    <link rel="stylesheet" type="text/css" href="/css/fretboard.f32f2a8d5293869f0195.css">
+    <link rel="stylesheet" type="text/css" href="/css/pretty.0ae3265014f89d9850bf.css">
+    <link rel="stylesheet" type="text/css" href="/css/pretty-vendor.83ac49e057c3eac4fce3.css">
+    <link rel="stylesheet" type="text/css" href="/css/global.css">
+    <link rel="stylesheet" type="text/css" href="/css/misc.css">
+    <title> {{ .Site.Title }} </title>
 </head>
