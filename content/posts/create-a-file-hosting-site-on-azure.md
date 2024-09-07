@@ -127,3 +127,76 @@ return Response(generate_file(), mimetype=mimetypes.guess_type(name)[0], headers
 ```
 
 I'm not going to do that though. I will let the user decide what goes into their disk.
+
+## Deploy to Azure
+
+Now, for the fun part. Let's put our app on the internet with Azure! Create a new resource group if you want to organize all related resources together and create a Linux-based App Service Plan in it. The Free tier should be fine until you start getting some real traffic.
+
+![](/images/trashcan-7.png)
+
+Next, create an App Service in the App Service Plan you just created. Choose the *Code* type and select your runtime stack. Make sure that you are in the same region as your ASP or else you won't see it.
+
+![](/images/trashcan-8.png)
+
+We need to provide the App Service a way to access our code. You would want to use git for this so that you can setup automated CI/CD pipelines. App Service supports a number of git services including hosting a local git server on the App Service itself. We will use GitHub to keep things simple. As you link your GitHub repo to the App Service, a GitHub Actions workflow is automatically created that builds and deploys your app when you push a commit.
+
+Before we push the code got GitHub, we need to a couple things to make our code production-ready-ish. We will use *gunicorn* to run our Flask server on prod. From their website:
+> Gunicorn ‘Green Unicorn’ is a Python WSGI HTTP Server for UNIX. It’s a pre-fork worker model ported from Ruby’s Unicorn project. The Gunicorn server is broadly compatible with various web frameworks, simply implemented, light on server resources, and fairly speedy.
+Install it with `pip install gunicorn`.
+Next, we need to create a `requirements.txt` file that contains a list of our application's dependencies. With this file, our App Service will install all dependencies required to run our app. To create the file run `pip freeze > requirements.txt`.
+Your code is now ready to be pushed into GitHub.
+
+Navigate to the *Deployment Center* blade of your App Service. Select *GitHub* as your source and select the repository and branch where your code is. You may need to sign into GitHub and authorize App Service.
+
+![](/images/trashcan-10.png)
+
+You will see that Azure by default creates a new user-assigned managed identity that the GitHub Action workflow will use to authenticate to Azure. You can preview the workflow file if you want.
+
+![](/images/trashcan-9.png)
+
+After you have setup your deployment settings correctly, the GitHub Action worlflow should start which will build and deploy your app in the App Service. You may need to wait until the deployment is complete before you can access the application.
+
+## Use Managed Identity to allow the App Service to access Blobs
+
+You need to assign the necessary RBAC roles to the managed identity of the app for data access. First, enable the system-assigned managed identity for the app. You can also use a user-assigned managed identity if you'd like. Second, assign the necessary role on the storage account to the managed identity.
+
+![](/images/trashcan-20.png)
+![](/images/trashcan-21.png)
+
+You can use the default domain that's created with your App Service to access your application over the internet.
+
+![](/images/trashcan-11.png)
+![](/images/trashcan-12.png)
+
+Everything's working like we expected. We did not have to change any code when switching environments.
+
+## Setup a custom domain
+
+You don't want to keep using that ugly default domain right? You can setup your pretty domain with App Service in a few simple steps. Navigate to the *Custom domains* blade of your App Service and setup the following settings:
+
+![](/images/trashcan-13.png)
+
+You will want to select *All other domain services* if you did not buy your domain from Azure. Enter your domain and you will be presented with an *A* and a *TXT* record that you need to add to your domain.
+
+![](/images/trashcan-14.png)
+
+Validate and add it and your domain is ready to use. App Service automatically sets up certificates required for HTTPS, but it may take a while.
+
+## Disable public network access on the Storage Account
+
+Since your app is on Azure, you don't need to have public access enabled for your Storage Account, but we need to setup some networking stuff to let our app access the Storage Account. We will start with creating a virtual network and a subnet for our app.
+
+![](/images/trashcan-15.png)
+
+Microsoft recommends that you allocate atleast a /26 size subnet to account for future upscaling. Navigate to the Networking blade of your App Service to setup virtual network integration.
+
+![](/images/trashcan-16.png)
+
+Create a new virtual network integration, select the virtual network and subnet you created and click connect.
+
+![](/images/trashcan-17.png)
+
+Now your app service can send outbound traffic to the vnet. Navigate to the Networking blade of your storage account. Select the option to only allow access from selected virtual networks and add our app service vnet and subnet.
+
+![](/images/trashcan-18.png)
+![](/images/trashcan-19.png)
