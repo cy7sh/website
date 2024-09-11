@@ -1,4 +1,4 @@
-baseURL = 'https://shirish.ca/'
+baseURL = 'http://shirish.ca/'
 languageCode = 'en-us'
 title = "shirish.ca"
 theme = 'mytheme'

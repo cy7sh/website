@@ -5,7 +5,7 @@ draft: true
 showdate: true
 ---
 
-The goal is to create a website that lets users upload files, optionally encrypt it with a password, and provide them with a download link to that file. Check out [my implementation](https://trashcan.app/) to get a feel.
+The goal is to create a website that lets users upload files, optionally encrypt it with a password, and provide them with a download link to that file. Check out [my implementation](https://trashcan.app/) to get a feel and the [source code](https://github.com/singurty/trashcan) if you want to see how it works.
 
 ## Setup Storage Account and authorize access from the application
 
@@ -128,9 +128,60 @@ return Response(generate_file(), mimetype=mimetypes.guess_type(name)[0], headers
 
 I'm not going to do that though. I will let the user decide what goes into their disk.
 
+## Create a Docker container
+
+Our application will be deployed to Azure as a Docker container. You need to create a Dockerfile which is basically a set of instructions for building your Docker image.
+
+```
+FROM python:3.12
+
+EXPOSE 80 2222
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg \
+    && curl https://packages.microsoft.com/config/debian/12/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update \
+    && ACCEPT_EULA=Y apt-get install -y --no-install-recommends \
+    unixodbc msodbcsql18 dialog openssh-server \
+    && echo "root:Docker!" | chpasswd \
+    && chmod +x ./entrypoint.sh
+COPY sshd_config /etc/ssh/
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+ENTRYPOINT ["./entrypoint.sh"]
+```
+We expose port 80 for the website and port 2222 for the App Service Web SSH feature which can be very useful for debugging. The password for root has to be `Docker!` for this to work, but the port 2222 is never exposed to the internet so it's all safe. You also need `unixodbc` and `msodbcsql18` drivers to connect to Azure SQL Server which we will be doing soon. Your `sshd_config` file should look like this:
+```
+Port    2222
+ListenAddress   0.0.0.0
+LoginGraceTime  180
+X11Forwarding   yes
+Ciphers aes128-cbc,3des-cbc,aes256-cbc,aes128-ctr,aes192-ctr,aes256-ctr
+MACs hmac-sha1,hmac-sha1-96
+StrictModes     yes
+SyslogFacility  DAEMON
+PasswordAuthentication  yes
+PermitEmptyPasswords    no
+PermitRootLogin         yes
+Subsystem sftp internal-sftp
+```
+You can read more about setting up SSH on custom Linux containers [here](https://learn.microsoft.com/en-gb/azure/app-service/configure-custom-container?tabs=debian&pivots=container-linux#enable-ssh).
+
+Our `entrypoint.sh` file looks like this:
+```
+#!/bin/sh
+set -e
+service ssh start
+exec gunicorn main:app > gunicorn.log 2> gunicorn_error.log
+```
+It just starts the ssh service and our gunicorn server. For gunicorn, I want stdout to be redirected to *gunicorn.log* and *gunicorn_error.log* for stderr. These logs will help you debug when things don't work.
+
 ## Deploy to Azure
 
-Now, for the fun part. Let's put our app on the internet with Azure! Create a new resource group if you want to organize all related resources together and create a Linux-based App Service Plan in it. The Free tier should be fine until you start getting some real traffic.
+Now, for the fun part. Let's put our app on the internet with Azure! Create a new resource group if you want to organize all related resources together and create a Linux-based App Service Plan in it. The Free tier should be fine until you start getting some real traffic, but you will need at least a Basic paln to setup virtual network integration which we will need to do to let our app connect to the Storage Account and SQL Server later.
 
 ![](/images/trashcan-7.png)
 
@@ -161,11 +212,13 @@ After you have setup your deployment settings correctly, the GitHub Action worlf
 You need to assign the necessary RBAC roles to the managed identity of the app for data access. First, enable the system-assigned managed identity for the app. You can also use a user-assigned managed identity if you'd like. Second, assign the necessary role on the storage account to the managed identity.
 
 ![](/images/trashcan-20.png)
+
 ![](/images/trashcan-21.png)
 
 You can use the default domain that's created with your App Service to access your application over the internet.
 
 ![](/images/trashcan-11.png)
+
 ![](/images/trashcan-12.png)
 
 Everything's working like we expected. We did not have to change any code when switching environments.
@@ -199,4 +252,56 @@ Create a new virtual network integration, select the virtual network and subnet 
 Now your app service can send outbound traffic to the vnet. Navigate to the Networking blade of your storage account. Select the option to only allow access from selected virtual networks and add our app service vnet and subnet.
 
 ![](/images/trashcan-18.png)
+
 ![](/images/trashcan-19.png)
+
+## Create a databse
+
+We will need a database to store password hash, nonce, and salt to have encryption and a unique URI for each file because if we identify files by name, what happens if there are two files with the same name? Azure SQL Server has a generous free tier and it is very simple to set up (once you know how it works of course). 
+
+![](/images/trashcan-22.png)
+
+We will use Entra-only authentication.
+
+![](/images/trashcan-23.png)
+
+Then create a database in the SQL server.
+
+![](/images/trashcan-24.png)
+
+We need to grant our App Service's managed identity permission to access the SQL server.
+
+![](/images/trashcan-25.png)
+
+Also, make sure that the server is setup to allow connection from our App Service's integrated virtual network
+
+![](/images/trashcan-28.png)
+
+I have found Azure Data Studio to be the easiest way to work with Azure SQL Server. You can find installation instructions [here](https://learn.microsoft.com/en-us/azure-data-studio/download-azure-data-studio). After installation, create a new connection to your Azure SQL Server like so:
+
+![](/images/trashcan-26.png)
+
+You may need to login to your Azure account to authenticate. After you have established a connection, you can create a new table right away in the database. Here's how mine looks like:
+
+![](/images/trashcan-27.png)
+
+## Connect to the Databse from our App
+
+We will be using the Flask extension for SQLAlchemy to interact with the database. The process of establishing a connection using Entra ID auth is a little complicated and it took me some frustrating hours to figure it out. You need to use authentication token which you can get with `DefaultAzureCredential()`. The advantage is that it works with any authentication method whether it's a managed identity, CLI, PowerShell, or anything else. You can read more about connecting to Azure SQL with the pyodbc driver (which is what SQLAlchemy uses) (in this Learn documentation)[https://learn.microsoft.com/en-us/azure/azure-sql/database/azure-sql-python-quickstart]. Authenticating with SQL credentials would be simpler but it's an older method and not recommended anymore.
+```
+SQL_COPT_SS_ACCESS_TOKEN = 1256
+TOKEN_URL = "https://database.windows.net/"
+
+connection_string = os.getenv('AZURE_SQL_CONNECTIONSTRING')
+connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": connection_string})
+token_bytes = default_credential.get_token(TOKEN_URL).token.encode('utf-16-le')
+token_struct = struct.pack(f'<I{len(token_bytes)}s', len(token_bytes), token_bytes)
+app.config['SQLALCHEMY_DATABASE_URI'] = connection_url
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"connect_args": {"attrs_before": {SQL_COPT_SS_ACCESS_TOKEN: token_struct}}}
+model.db.init_app(app)
+```
+Your `AZURE_SQL_CONNECTIONSTRING` environment variable should look something like this:
+```
+Driver={ODBC Driver 18 for SQL Server};Server=tcp:trashcan.database.windows.net,1433;Database=trashcandb;TrustServerCertificate=no;Connection Timeout=30;
+```
+This is not a Python tutorial so I won't go into any detail about inserting and query data into and from the datbase. You can always check out the full (source code on github)[https://github.com/singurty/trashcan]. I also implemented the encryption feature and made the frontend more tolerable with CSS and Jinja2 templates.
