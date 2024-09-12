@@ -3,33 +3,3 @@ languageCode = 'en-us'
 title = "shirish.ca"
 theme = 'mytheme'
 publishdir = './public/'
-
-[params]
-useCDN=false
-
-[[menu.main]]
-name = "home"
-url = '/'
-weight = 1
-
-[[menu.main]]
-name = "rss"
-url = "/index.xml"
-weight = 4
-
-# Code Highlight
-[markup]
-  [markup.highlight]
-    anchorLineNos = false
-    codeFences = true
-    guessSyntax = false
-    hl_Lines = ''
-    hl_inline = false
-    lineAnchors = ''
-    lineNoStart = 1
-    lineNos = false
-    lineNumbersInTable = true
-    noClasses = true
-    noHl = false
-    style = 'monokai'
-    tabWidth = 4
