@@ -1,5 +1,5 @@
 ---
-title: "Create a File Hosting Site on Azure"
+title: "Create a File Sharing Service on Azure"
 date: 2024-09-07T13:03:55-04:00
 draft: true
 showdate: true
@@ -177,15 +177,75 @@ set -e
 service ssh start
 exec gunicorn main:app > gunicorn.log 2> gunicorn_error.log
 ```
-It just starts the ssh service and our gunicorn server. For gunicorn, I want stdout to be redirected to *gunicorn.log* and *gunicorn_error.log* for stderr. These logs will help you debug when things don't work.
+It just starts the ssh service and our gunicorn server. For gunicorn, I want stdout to be redirected to *gunicorn.log* and *gunicorn_error.log* for stderr. These logs will help you debug when things don't work. You can login with SSH and access them.
+
+## Create an Azure Container Registry and setup CI/CD with GitHub Actions
+
+We will use Azure Container Registry to store our container image. Create an ACR with default settings and Basic SKU should be fine.
+
+![](/images/trashcan-29.png)
+
+Create a managed identity which will be used by Github to push images to the registry. Add a new credential under the *Federated credentials* blade of the managed identity.
+
+![](/images/trashcan-30.png)
+
+Select *Github Actions deploying Azure resources* scenario and enter your Github repository details. This will be repository where your code and Actions workflow will be in.
+
+![](/images/trashcan-31.png)
+
+Assign the Github managed identity *AcrPush* role on the registry. This will allow our Actions workflow to push docker images into the registry.
+
+![](/images/trashcan-32.png)
+
+For Github Actions to use this managed identity, you need to create some secrets in your repository. Navigate to the settings page of your repository and under *Secrects and Variables* and *Actions*, create these secrets:
+
+![](/images/trashcan-33.png)
+
+You will find these values in the *Overview* blade of the managed identity you created for Github.
+
+Create a YAML file under *.github/workflows* directory in your project. This will house the Actions configuration to build our docker container and push it to ACR. Mine looks like this:
+```
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Azure login
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - uses: actions/checkout@v4
+    - name: Build and push the Docker image
+      run: |
+        az acr login --name trashcan
+        docker build . -t trashcan.azurecr.io/trashcan:${{ github.sha }} -t trashcan.azurecr.io/trashcan:latest
+        docker push trashcan.azurecr.io/trashcan --all-tags
+```
+Replace `trashcan.azurecr.io` with your registry's URL. This workflow will build the image, tag it with both the commit ID and *latest*, and push it to the registry using the credentials supplied in secrets.
 
 ## Deploy to Azure
 
-Now, for the fun part. Let's put our app on the internet with Azure! Create a new resource group if you want to organize all related resources together and create a Linux-based App Service Plan in it. The Free tier should be fine until you start getting some real traffic, but you will need at least a Basic paln to setup virtual network integration which we will need to do to let our app connect to the Storage Account and SQL Server later.
+Now, for the fun part. Let's put our app on the internet with Azure! Create a new resource group if you want to organize all related resources together and create a Linux-based App Service Plan in it. The Free tier should be fine until you start getting some real traffic, but you will need at least a Basic plan to setup virtual network integration which we will need to do to let our app connect to the Storage Account and SQL Server later.
 
 ![](/images/trashcan-7.png)
 
-Next, create an App Service in the App Service Plan you just created. Choose the *Code* type and select your runtime stack. Make sure that you are in the same region as your ASP or else you won't see it.
+Next, create an App Service in the App Service Plan you just created. Choose the *Container* type. Make sure that you are in the same region as your ASP or else you won't see it.
 
 ![](/images/trashcan-8.png)
 
@@ -273,7 +333,7 @@ We need to grant our App Service's managed identity permission to access the SQL
 
 ![](/images/trashcan-25.png)
 
-Also, make sure that the server is setup to allow connection from our App Service's integrated virtual network
+Also, make sure that the server is setup to allow connection from your App Service's integrated virtual network
 
 ![](/images/trashcan-28.png)
 
@@ -284,6 +344,8 @@ I have found Azure Data Studio to be the easiest way to work with Azure SQL Serv
 You may need to login to your Azure account to authenticate. After you have established a connection, you can create a new table right away in the database. Here's how mine looks like:
 
 ![](/images/trashcan-27.png)
+
+I have setup the *id* column as *identity* which auto-generates the *id* for any row we insert.
 
 ## Connect to the Databse from our App
 
@@ -304,4 +366,4 @@ Your `AZURE_SQL_CONNECTIONSTRING` environment variable should look something lik
 ```
 Driver={ODBC Driver 18 for SQL Server};Server=tcp:trashcan.database.windows.net,1433;Database=trashcandb;TrustServerCertificate=no;Connection Timeout=30;
 ```
-This is not a Python tutorial so I won't go into any detail about inserting and query data into and from the datbase. You can always check out the full (source code on github)[https://github.com/singurty/trashcan]. I also implemented the encryption feature and made the frontend more tolerable with CSS and Jinja2 templates.
+This is not a Python tutorial so I won't go into any detail about inserting and query data into and from the datbase. You can always check out the full [source code on github](https://github.com/singurty/trashcan). I also implemented the encryption feature and made the frontend more tolerable with CSS and Jinja2 templates.
