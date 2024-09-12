@@ -263,7 +263,11 @@ Next, create an App Service in the App Service Plan you just created. Choose the
 
 ![](/images/trashcan-8.png)
 
-Assign a managed identity to the app service and grant that identity *AcrPull* role on the container registry. This will allow the app service to pull docker images from the registry and deploy.
+Enable the system-assigned managed identity for the app. You can also use a user-assigned managed identity if you'd like.
+
+![](/images/trashcan-20.png)
+
+Grant that identity *AcrPull* role on the container registry. This will allow the app service to pull docker images from the registry and deploy.
 
 ![](/images/trashcan-34.png)
 
@@ -288,19 +292,14 @@ Without this, the webhook calls may fail with a 401. You can see all the webhook
 
 ![](/images/trashcan-36.png)
 
-## Use a managed mdentity to allow the App Service to access blobs
-
-You need to assign the necessary RBAC roles to the managed identity of the app for data access. First, enable the system-assigned managed identity for the app. You can also use a user-assigned managed identity if you'd like.
-
-![](/images/trashcan-20.png)
-
- Second, assign the *Storage Blob Data Contributor* role on the storage account.
+Assign the *Storage Blob Data Contributor* role on storage account to the manged identity of the app.
 
 ![](/images/trashcan-21.png)
 
 You can use the default domain that's created with App Service to access your application over the internet.
 
 ![](/images/trashcan-11.png)
+
 Everything's working like we expected. We did not have to change any code when switching environments.
 
 ![](/images/trashcan-12.png)
