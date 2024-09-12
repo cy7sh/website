@@ -5,6 +5,8 @@ draft: false
 showdate: true
 ---
 
+![](/images/trashcan-37.png)
+
 The goal is to create and deploy a website that lets users upload files, optionally encrypt it with a password, and provides them with a download link to that file. Check out [my implementation](https://trashcan.app/) to get a feel and the [source code](https://github.com/singurty/trashcan) if you want to see how it works.
 
 ## Setup a Storage Account and authorize access from the application
