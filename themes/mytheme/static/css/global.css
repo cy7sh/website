@@ -52,7 +52,7 @@ html, body {
   border-color: var(--color-divider);
 }
 
-#doc, #doc div, #doc span, #doc p, #doc li, #doc th, #doc td, #doc dd, #doc dl {
+#doc, #doc div, #doc, #doc p, #doc li, #doc th, #doc td, #doc dd, #doc dl {
   color: var(--color-text);
 }
 
