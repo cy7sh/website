@@ -3,3 +3,6 @@ languageCode = 'en-us'
 title = "cy7.sh"
 theme = 'mytheme'
 publishdir = './public/'
+
+[outputs]
+  home = ['rss']
