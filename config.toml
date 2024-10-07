@@ -1,5 +1,5 @@
-baseURL = 'http://shirish.ca/'
+baseURL = 'http://cy7.sh/'
 languageCode = 'en-us'
-title = "shirish.ca"
+title = "cy7.sh"
 theme = 'mytheme'
 publishdir = './public/'
