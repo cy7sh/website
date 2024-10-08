@@ -5,4 +5,4 @@ theme = 'mytheme'
 publishdir = './public/'
 
 [outputs]
-  home = ['rss']
+  home = ['html', 'rss']
