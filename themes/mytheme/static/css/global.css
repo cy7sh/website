@@ -1,7 +1,7 @@
 /*
   Light Mode Color Scheme
 */
-:root {
+html.light {
   --color-anchor: #337ab7;
   --color-bg: #fff;
   --color-blockquote-text: #777;
@@ -20,7 +20,7 @@
 /*
   Dark Mode Color Scheme
 */
-html.dark {
+:root {
   --color-anchor: #77e1cd;
   --color-bg: #1c1c1c;
   --color-blockquote-text: #c0bcbc;

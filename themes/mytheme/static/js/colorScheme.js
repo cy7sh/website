@@ -1,7 +1,7 @@
 // Update root html class to set CSS colors
 const toggleDarkMode = () => {
   const root = document.querySelector('html');
-  root.classList.toggle('dark');
+  root.classList.toggle('light');
 }
 
 // Update local storage value for colorScheme
@@ -25,11 +25,11 @@ if (toggle) {
 // Check for color scheme on init
 const checkColorScheme = () => {
   const colorScheme = localStorage.getItem('colorScheme');
-  // Default to light for first view
-  if (colorScheme === null || colorScheme === undefined) localStorage.setItem('colorScheme', 'light');
-  // If previously saved to dark, toggle switch and update colors
-  if (colorScheme === 'dark') {
-    toggle.checked = true;
+  // Default to dark for first view
+  if (colorScheme === null || colorScheme === undefined) localStorage.setItem('colorScheme', 'dark');
+  // If previously saved to light, toggle switch and update colors
+  if (colorScheme === 'light') {
+    toggle.checked = false;
     toggleDarkMode();
   }
 }
