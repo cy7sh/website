@@ -1,6 +1,6 @@
 baseURL = 'http://cy7.sh/'
 languageCode = 'en-us'
-title = "Cy's blog"
+title = "blog"
 theme = 'mytheme'
 publishdir = './public/'
 
