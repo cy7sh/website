@@ -9,9 +9,13 @@
     {% endif %}
     license.</div>
   {% endif %}
+  <div>
+    <a href="https://github.com/cy7sh/website">source</a>
+    <a href="https://github.com/Speyll/anemone">theme</a>
+  </div>
   {% if config.generate_feeds %}
   <div>
-    <a class="no-style" target="_blank" rel="noopener noreferrer" href="{{ get_url(path="atom.xml", trailing_slash=false) }}" title="Subscribe via RSS for updates."><svg class="icons"><use href="{{ get_url(path='icons.svg#rss', trailing_slash=false) | safe }}"></use></svg></a>
+    <a class="no-style" href="{{ get_url(path="atom.xml", trailing_slash=false) }}"><svg class="icons"><use href="{{ get_url(path='icons.svg#rss', trailing_slash=false) | safe }}"></use></svg></a>
   </div>
   {% endif %}
 </div>

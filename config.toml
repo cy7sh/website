@@ -20,6 +20,5 @@ highlight_code = true
 list_pages = true
 header_nav = [
   { url = "/", name = "home" },
-  { url = "/blog", name = "blog" },
-  { url = "/about", name = "about" }
+  { url = "/blog", name = "blog" }
 ]
