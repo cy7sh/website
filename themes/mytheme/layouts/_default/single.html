@@ -1,7 +1,0 @@
-{{ define "main" }}
-<h1 style="margin-bottom:7px"> {{ .Title }} </h1>
-<small style="float:left; color: #888">{{ .PublishDate | time.Format ":date_medium" }}</small>
-<small style="float:right; color: #888"><a href="/">See all posts</a></small>
-<br> <br>
-{{ .Content }}
-{{ end }}
