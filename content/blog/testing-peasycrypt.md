@@ -1,6 +1,6 @@
 ---
 title: "Testing Peasycrypt"
-date: 2022-10-02T13:09:29+05:45
+date: 2022-10-02
 draft: false
 showdate: true
 ---

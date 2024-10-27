@@ -1,6 +1,6 @@
 ---
 title: "Introducing Peasycrypt"
-date: 2022-09-29T18:45:33+05:45
+date: 2022-09-29
 draft: false
 showdate: true
 ---

@@ -1,6 +1,6 @@
 ---
 title: "Create and Deploy a File Sharing Service on Azure"
-date: 2024-09-12T01:02:55-04:00
+date: 2024-09-12
 draft: false
 showdate: true
 ---
