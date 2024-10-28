@@ -1,8 +1,7 @@
 ---
 title: "Testing Peasycrypt"
 date: 2022-10-02
-draft: false
-showdate: true
+draft: true
 ---
 
 It was a bit challenging for me to write tests for Peasycrypt because it dealt with files on the filesytem. My first course of action was to peek at how rclone did it. I came across this function in its codebase:

@@ -1,5 +1,5 @@
 ---
-title: "Create your own DNS nameserver"
+title: "create your own DNS nameserver"
 date: 2024-01-22
 draft: false
 showdate: true

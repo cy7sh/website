@@ -1,5 +1,5 @@
 ---
-title: "Create and Deploy a File Sharing Service on Azure"
+title: "build and deploy a file sharing service on Azure"
 date: 2024-09-12
 draft: false
 showdate: true
@@ -17,10 +17,10 @@ We will store the files as blobs in a storage account. Go ahead and create a sto
 
 Now that our storage account is setup, we are going to write some code to talk to it and store files into it. Create a Python file and import the following:
 
-{{< highlight python >}}
+```python
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient
-{{< /highlight >}}
+```
 
 If you don't have these modules run `pip install azure-storage-blob azure-identity` in a terminal to install them. You can authorize your application to Azure Blob Storage by using the account access key, but that's not recommended because if you ever expose that key inadvertently, someone who gets their hands on them will have full access to your storage account. `DefaultAzureCredential` supports all kinds of authentication methods and automatically decides which one to use at runtime so you don't have to make any code changes when switching environments. For example, your app can use your Azure CLI credentials to authenticate itself when running locally and use a managed identity when it's deployed to Azure. This is exactly how we will doing things. Since we will be running things locally first, make sure that you are logged into Azure CLI with the `az login` command.
 
@@ -31,14 +31,14 @@ The account you use to login to Azure CLI must have correct permissions to read 
 
 It's very simple to connect to your storage account with `DefaultAzureCredential`:
 
-{{< highlight python >}}
+```python
 CONTAINER_NAME = 'userfiles'
 
 account_url = "https://<your_storage_account>.blob.core.windows.net"
 default_credential = DefaultAzureCredential()
 
 blob_service_client = BlobServiceClient(account_url, credential=default_credential)
-{{< /highlight >}}
+```
 
 Go ahead and run that. If it runs without any error, it's working.
 
@@ -46,15 +46,15 @@ Go ahead and run that. If it runs without any error, it's working.
 
 Now, we will write code for the web app. If you don't have Flask installed, run `pip install Flask`. You probably don't want to allow users to upload every type of file. We will create a function to check if we allow the file the user is trying to upload.
 
-{{< highlight python >}}
+```python
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'docx'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-{{< /highlight >}}
+```
 
 For the website itself:
 
-{{< highlight python >}}
+```python
 from flask import Flask, flash, request, redirect, Response
 from werkzeug.utils import secure_filename
 
@@ -87,14 +87,16 @@ def upload_file():
       <input type=submit value=Upload>
     </form>
     '''
-{{< /highlight >}}
+```
 
 We use `secure_filename` to protect against malicious filenames which are often used by attackers to exploit web applications. You really just need these two lines of code to upload the file to Azure Blob Storage:
 
-{{< highlight python >}}
-blob_client = blob_service_client.get_blob_client(container=CONTAINER_NAME, blob=filename)
+```python
+blob_client = blob_service_client.get_blob_client(
+                container=CONTAINER_NAME,
+                blob=filename)
 blob_client.upload_blob(file)
-{{< /highlight >}}
+```
 
 This uploads the file to `CONTAINER_NAME` container as a blob with name `filename`.
 
@@ -110,16 +112,18 @@ You should be able to browse to your container on Azure Portal and see the file 
 
 You can create a SAS link that lets the user download the file straight from Azure Blob Storage. But, we are not doing that. One of our features is encryption. Our app would need to fetch data from Azure and decrypt it before sending it to the browser. I have *Storage Key Access* for my Storage Account disabled and use Entra-authentication anyway. With these lines of code you can get the requested file from Azure and send it to the browser:
 
-{{< highlight python >}}
+```python
 @app.route('/file/<name>')
 def download_file(name):
     def generate_file():
-        blob_client = blob_service_client.get_blob_client(container=CONTAINER_NAME, blob=name)
+        blob_client = blob_service_client.get_blob_client(
+                        container=CONTAINER_NAME,
+                        blob=name)
         stream = blob_client.download_blob()
         for chunk in stream.chunks():
             yield chunk
     return Response(generate_file(), mimetype=mimetypes.guess_type(name)[0])
-{{< /highlight >}}
+```
 
 The user can visit `/file/<filename>` to download an uploaded file. `generate_file()` is a generator function that fetches the file data from Azure Blob Storage chunk by chunk. If it's a large file, you don't want to download all of it into the memory at once. Flask supports generator function as a response which means you can just pass this function to `Response()` and it will take care of the rest. Now your app gets a chunk from Azure Blob Storage sends it to the browser, gets the next chunk and repeats until the whole file is transferred. Hopefully, you won't run out of memory transmitting large files now. Also, make sure the `mimetype` is correct so the browser knows what you're sending. Use `mimetypes.guess_type()` to guess the type based on the file extension. This function returns a `(type, encoding)` tuple where *type* is a string like `type/subtype`, suitable for the `Content-Type` header.
 
@@ -129,9 +133,11 @@ Try to download the file you just uploaded.
 
 Perfect! The browser knows that it's a image file because of the correctly labeled `Content-Type` and displays it. You can also set the `Content-Disposition` header to attachment to instruct the browser to download the file to disk instead of displaying it. To do this add a `headers` argument to the returned Response:
 
-{{< highlight python >}}
-return Response(generate_file(), mimetype=mimetypes.guess_type(name)[0], headers={'Content-disposition': 'attachment'})
-{{< /highlight >}}
+```python
+return Response(generate_file(),
+                mimetype=mimetypes.guess_type(name)[0],
+                headers={'Content-disposition': 'attachment'})
+```
 
 I'm not going to do that though. I will let the user decide what goes into their disk.
 
@@ -139,7 +145,7 @@ I'm not going to do that though. I will let the user decide what goes into their
 
 Our application will be deployed to Azure as a Docker container. You need to create a *Dockerfile* which is basically a set of instructions for building your Docker image.
 
-{{< highlight dockerfile >}}
+```python
 FROM python:3.12
 
 EXPOSE 80 2222
@@ -159,11 +165,11 @@ COPY sshd_config /etc/ssh/
 RUN pip install --no-cache-dir -r requirements.txt
 
 ENTRYPOINT ["./entrypoint.sh"]
-{{< /highlight >}}
+```
 
 We expose port 80 for the website and port 2222 for the App Service Web SSH feature which can be very useful for debugging. The password for root has to be `Docker!` for it to work, but the port 2222 is never exposed to the internet so it's all safe. You also need `unixodbc` and `msodbcsql18` drivers to connect to Azure SQL Server which we will be doing soon. Your `sshd_config` file should look like this:
 
-{{< highlight text >}}
+```
 Port    2222
 ListenAddress   0.0.0.0
 LoginGraceTime  180
@@ -176,18 +182,18 @@ PasswordAuthentication  yes
 PermitEmptyPasswords    no
 PermitRootLogin         yes
 Subsystem sftp internal-sftp
-{{< /highlight >}}
+```
 
 You can read more about setting up SSH on custom Linux containers [here](https://learn.microsoft.com/en-gb/azure/app-service/configure-custom-container?tabs=debian&pivots=container-linux#enable-ssh).
 
 Our `entrypoint.sh` file looks like this:
 
-{{< highlight bash >}}
+```bash
 #!/bin/sh
 set -e
 service ssh start
 exec gunicorn main:app > gunicorn.log 2> gunicorn_error.log
-{{< /highlight >}}
+```
 
 It just starts the ssh service and our gunicorn server. For gunicorn, I want stdout to be redirected to *gunicorn.log* and *gunicorn_error.log* for stderr. These logs will be useful to debug when things don't work. I can login with SSH to access them.
 
@@ -217,7 +223,7 @@ You will find these values in the *Overview* blade of the managed identity you c
 
 Create a YAML file under *.github/workflows* directory in your project. This will house the Actions configuration to build our docker container and push it to ACR. Mine looks like this:
 
-{{< highlight yaml >}}
+```yaml
 name: Docker Image CI
 
 on:
@@ -249,7 +255,7 @@ jobs:
         az acr login --name trashcan
         docker build . -t trashcan.azurecr.io/trashcan:${{ github.sha }} -t trashcan.azurecr.io/trashcan:latest
         docker push trashcan.azurecr.io/trashcan --all-tags
-{{< /highlight >}}
+```
 
 Replace `trashcan.azurecr.io` with your registry's URL. This workflow will build the image, tag it with both the commit ID and *latest*, and push it to the registry using the credentials supplied in secrets.
 
@@ -372,7 +378,7 @@ I have the *id* column setup as *identity* which auto-generates the *id* for any
 
 We will be using the Flask extension for SQLAlchemy to interact with the database, install it with `pip install flask_sqlalchemy`. The process of establishing a connection using Entra ID auth is a little complicated and it took me some frustrating hours to figure it out. You need to use an authentication token which you can get with `DefaultAzureCredential()`. The advantage is that it works with any authentication method whether it's a managed identity, CLI, PowerShell, or anything else. You can read more about connecting to Azure SQL with the pyodbc driver (which is what SQLAlchemy uses) [here](https://learn.microsoft.com/en-us/azure/azure-sql/database/azure-sql-python-quickstart). Authenticating with SQL credentials could be simpler but it's an older method and not recommended anymore.
 
-{{< highlight python >}}
+```python
 SQL_COPT_SS_ACCESS_TOKEN = 1256
 TOKEN_URL = "https://database.windows.net/"
 
@@ -383,11 +389,11 @@ token_struct = struct.pack(f'<I{len(token_bytes)}s', len(token_bytes), token_byt
 app.config['SQLALCHEMY_DATABASE_URI'] = connection_url
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"connect_args": {"attrs_before": {SQL_COPT_SS_ACCESS_TOKEN: token_struct}}}
 model.db.init_app(app)
-{{< /highlight >}}
+```
 Your `AZURE_SQL_CONNECTIONSTRING` environment variable should look something like this:
 
-{{< highlight text >}}
+```
 Driver={ODBC Driver 18 for SQL Server};Server=tcp:trashcan.database.windows.net,1433;Database=trashcandb;TrustServerCertificate=no;Connection Timeout=30;
-{{< /highlight >}}
+```
 
 This is not a Python tutorial so I won't go into any detail about inserting and query data into and from the datbase. You can always check out the full [source code on github](https://github.com/singurty/trashcan). I also implemented the encryption feature and made the frontend more tolerable with CSS and Jinja2 templates.
