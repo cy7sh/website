@@ -15,7 +15,7 @@ this is the list of software or other services that i use. i don't own any inter
 - shell: [zsh](https://www.zsh.org/)
 - browser: [librewolf](https://codeberg.org/librewolf) (comes with sane defaults and no ads unlike [firefox](https://www.mozilla.org/firefox/))
 - editor: [neovim](https://neovim.io/)
-- dotfiles: [here](https://git.sr.ht/~cy/dotfiles) you might be thinking "wtf is this weird file structure" but it's a [feature](https://www.chezmoi.io/user-guide/frequently-asked-questions/design/#why-does-chezmoi-use-weird-filenames)
+- dotfiles: [here](https://github.com/cy7sh/dotfiles) managed with: [dotbot](https://github.com/anishathalye/dotbot/)
 - terminal: [kitty](https://sw.kovidgoyal.net/kitty/) multiplexer: [tmux](https://github.com/tmux/tmux)
 - email: [migadu](https://migadu.com/) client: [evolution](https://help.gnome.org/users/evolution/) and [aerc](https://git.sr.ht/~rjarry/aerc)
 - backups: [borg](https://borgbackup.readthedocs.io/) provider: [rsync.net](https://rsync.net)
