@@ -2,8 +2,6 @@ name: Zola on GitHub Pages
 
 on: 
  push:
-  branches:
-   - zola
 
 jobs:
   build:
