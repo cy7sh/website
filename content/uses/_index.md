@@ -11,7 +11,7 @@ this is the list of software or other services that i use. i don't own any inter
 - window manager: [sway](https://github.com/swaywm/sway)
 - password manager: [bitwarden](https://bitwarden.com/) on a self-hosted [vaultwarden](https://github.com/dani-garcia/vaultwarden) [instance](https://pass.cy7.sh)
 - bookmark manager: [linkding](https://github.com/sissbruecker/linkding/)
-- rss reader: [miniflux](https://miniflux.app/)
+- rss reader: [freshrss](https://github.com/FreshRSS/FreshRSS) and [netnewswire](https://github.com/Ranchero-Software/NetNewsWire) on phone
 - shell: [zsh](https://www.zsh.org/)
 - browser: [librewolf](https://codeberg.org/librewolf) (comes with sane defaults and no ads unlike [firefox](https://www.mozilla.org/firefox/))
 - editor: [neovim](https://neovim.io/)

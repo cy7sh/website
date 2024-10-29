@@ -11,6 +11,7 @@ i host some services on this server that may interest you (if you can't sign up,
 - [vaultwarden](https://pass.cy7.sh) (password manager)
 - [linkding](https://link.cy7.sh) (bookmark manager)
 - [adguard](https://dns.cy7.sh) (dns-level adblocker, DoH at `https://dns.cy7.sh/dns-query`)
+- [freshrss](https://rss.cy7.sh) (RSS aggregator)
 
 if you wish to see how it's all put together, [the docker-compose is open source](https://github.com/cy7sh/selfhosted/)
 
