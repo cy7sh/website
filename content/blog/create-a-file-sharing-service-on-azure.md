@@ -67,7 +67,10 @@ def upload_file():
             flash("No file part")
             return redirect(request.url)
         file = request.files['file']
-        # the browser sends an empty filename if the user did not select a file
+
+        # the browser sends an empty filename
+        # if the user did not select a file
+
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
