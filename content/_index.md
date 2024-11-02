@@ -13,7 +13,7 @@ i host some services on this server that may interest you (if you can't sign up,
 - [adguard](https://dns.cy7.sh) (dns-level adblocker, DoH at `https://dns.cy7.sh/dns-query`)
 - [freshrss](https://rss.cy7.sh) (RSS aggregator)
 
-if you wish to see how it's all put together, [the docker-compose is open source](https://github.com/cy7sh/selfhosted/)
+if you wish to see how it's all put together, [the docker-compose is open source](https://git.cy7.sh/cy/selfhosted/src/branch/main/compose.yml)
 
 ### aka
 - [github/cy7sh](https://github.com/cy7sh)
